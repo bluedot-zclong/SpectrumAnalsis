@@ -1,0 +1,42 @@
+package bluedot.spectrum.web.controller;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import bluedot.spectrum.web.core.ModelAndView;
+import jxau.spectrum.frame.web.annotation.Controller;
+import jxau.spectrum.frame.web.annotation.RequestMapping;
+
+/**
+ * 全局搜索模块
+ * @author zclong
+ * 2018年1月21日
+ */
+@Controller
+public class GlobalSearchController extends BaseController{
+	/**
+	 * 全局搜索查询之简单索引
+	 * 2018年1月21日
+	 * zclong
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping("/globalsearch")
+	public Object getAllMaintenances(HttpServletRequest request, HttpServletResponse response){
+		return null;
+	}
+	
+	/**
+	 * 全局搜索之搜索
+	 * 2018年1月21日
+	 * zclong
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping("/search")
+	public ModelAndView search(HttpServletRequest request, HttpServletResponse response){
+		return null;
+	}
+}

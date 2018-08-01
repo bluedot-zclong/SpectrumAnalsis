@@ -1,0 +1,72 @@
+package bluedot.spectrum.web.controller;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import bluedot.spectrum.common.QueryObject;
+import bluedot.spectrum.commons.entity.Maintenance;
+import bluedot.spectrum.service.EditService;
+import bluedot.spectrum.service.QueryService;
+import bluedot.spectrum.web.core.ModelAndView;
+import jxau.spectrum.frame.web.annotation.Autowired;
+import jxau.spectrum.frame.web.annotation.Controller;
+import jxau.spectrum.frame.web.annotation.RequestMapping;
+import jxau.spectrum.frame.web.annotation.RequestParam;
+
+/**
+ * 回收站业务( 针对于algorithm， spectruminfo)
+ * @author 龚志鹏
+ * 2018年1月20日
+ */
+@Controller
+@RequestMapping("/recyclebin")
+public class RecycleController extends BaseController{
+	
+	@Autowired
+	private QueryService queryService;
+	@Autowired
+	private EditService editService;
+	
+	/**
+	 * 获得个人回收站所有文件
+	 * 2018年1月21日
+	 * zclong
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping("/getall")
+	public ModelAndView listAllRecycleBins(@RequestParam("start")Integer start,@RequestParam("end")Integer end, HttpServletRequest request, HttpServletResponse response){
+		//传给模板用来存储数据的model
+        Map<String, Object> model = new HashMap<String, Object>();
+        ModelAndView modelAndView = new ModelAndView();
+        Map<String,Object> condition = new HashMap<>();
+      
+        QueryObject queryParm = new QueryObject("maintenance", condition, start, end, null);
+        List<HashMap<String,Object>> queryResult = queryService.query(queryParm);
+        modelAndView.addAllObjects(model);
+        
+        List<Maintenance> systemInfoList  = getBeanList(queryResult, Maintenance.class);
+        modelAndView.addObject(systemInfoList);
+        
+        modelAndView.setViewName("/recycle/recycle");
+        return modelAndView;
+	}
+	
+	/**
+	 * 更新回收站文件状态
+	 * 2018年1月21日
+	 * zclong
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping("/update")
+	public Object updateRecycleBinStatus(HttpServletRequest request, HttpServletResponse response){
+		return null;
+	}	
+}

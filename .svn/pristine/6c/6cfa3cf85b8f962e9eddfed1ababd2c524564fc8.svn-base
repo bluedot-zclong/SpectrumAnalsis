@@ -1,0 +1,23 @@
+<#compress>
+	<#include "/common/bootstrapstatic.ftl" >
+	<#include "/common/basepagestatic.ftl" >
+	<#include "/common/basepage.ftl" >
+	<#include "/common/navbar.ftl" >
+	<#include "/common/sidebar.ftl" >
+	<#include "/system/maintenance.ftl" >
+	<@htmlHead title="系统维护">
+	</@htmlHead>
+	<@bootstrapstatic>
+	</@bootstrapstatic>
+	<@basepagestatic>
+	</@basepagestatic>
+	<@htmlBody>
+		<@sidebar>
+		</@sidebar>
+		<@navbar>
+		</@navbar>
+		<@content>
+		
+		</@content>
+	</@htmlBody>
+</#compress>

@@ -1,0 +1,96 @@
+package bluedot.spectrum.dao.util;
+
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import bluedot.spectrum.dao.entry.Column;
+import bluedot.spectrum.dao.entry.Index;
+import bluedot.spectrum.dao.entry.Table;
+
+public class JDBCUtil {
+	/**
+	 * 得到表名和表类型
+	 * 
+	 * @param dbmd
+	 * @return
+	 * @throws SQLException
+	 */
+	public static List<Table> getTables(DatabaseMetaData dbmd) throws SQLException {
+		String[] type = { "table" };
+		// 获取表中信息的结果集
+		ResultSet rs = dbmd.getTables(null, null, null, type);
+		// 输出表的信息
+		List<Table> list = new ArrayList<>();
+		String name, tableType;
+		while (rs.next()) {
+			Table table = new Table();
+			// 获取表名
+			name = rs.getString("TABLE_NAME");
+			// 获取表的类型
+			tableType = rs.getString("TABLE_TYPE");
+			// 输出结果集
+			table.setTableName(name);
+			table.setTableType(tableType);
+			list.add(table);
+		}
+		return list;
+	}
+
+	/**
+	 * 得到表中列属性
+	 * 
+	 * @param dbmd
+	 * @param tableName
+	 * @return
+	 * @throws SQLException
+	 */
+	public static List<Column> getCoulumns(DatabaseMetaData dbmd, String tableName) throws SQLException {
+		// 获取表中列的信息
+		ResultSet rs = dbmd.getColumns(null, null, tableName, "%");
+		// 输出表中列的信息
+		String columnName, type;
+		List<Column> list = new ArrayList<>();
+		while (rs.next()) {
+			Column column = new Column();
+			// 获取列名
+			columnName = rs.getString("COLUMN_NAME");
+			// 获取列类型
+			type = rs.getString("TYPE_NAME");
+			column.setColumnName(columnName);
+			column.setColumntype(type);
+			list.add(column);
+		}
+		return list;
+	}
+	/**
+	 * 得到表中的索引
+	 * @param dbmd
+	 * @param tableName
+	 * @return
+	 * @throws SQLException
+	 */
+	public static List<Index> getIndexMapper(DatabaseMetaData dbmd, String tableName) throws SQLException {
+		// 获取索引信息
+		ResultSet rs = dbmd.getIndexInfo(null, null, tableName, false, false);
+		// 输出索引信息
+		String indexName,columnName;
+		int indexType;
+		List<Index> list = new ArrayList<>();
+		while (rs.next()) {
+			Index index = new Index();
+			// 获取索引名
+			indexName = rs.getString("INDEX_NAME");
+			columnName = rs.getString("COLUMN_NAME");
+			index.setColumnName(columnName);
+			index.setIndexName(indexName);
+			list.add(index);
+		}
+		return list;
+	}
+
+}

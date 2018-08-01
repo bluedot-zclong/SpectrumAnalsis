@@ -1,0 +1,27 @@
+<style type="text/css">
+  .item:hover
+  {
+   background-color: Gray;
+   cursor:pointer;
+  }
+  .show
+  {
+   width: 200px;
+   z-index: 10;
+   display: block;
+  }
+  .hidden
+  {
+   width: 200px;
+   z-index: 10;
+   display: none;
+   border:1px solid rgb(80,160,91);
+   border-top:none;
+  }
+  table tr td
+  {
+   margin:none;
+   padding:none;
+   border:none;
+  }
+ </style>

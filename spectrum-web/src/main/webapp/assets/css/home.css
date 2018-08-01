@@ -1,0 +1,42 @@
+body {
+    position: relative;
+}
+.section {
+    color: #fff;
+    background:url("../img/star.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+
+/*      导航    */
+.my-nav a{
+    text-decoration: none;
+    outline: none;
+    color: #ffffff;
+    text-align: center;
+}
+.nav-link{
+    line-height: 5px !important;
+    margin-top: 15px;
+    height: 35px;
+    width: 125px;
+    margin-left: 10px;
+}
+.nav-link:link{
+    background-color:transparent !important;
+}
+.nav-link:hover{
+    background-color:transparent !important;
+    border: .5px solid #ffffff;
+    border-radius: 25px;
+}
+.navbar-brand{
+    padding-left: 150px;
+    line-height: 20px;
+}
+
+.active a{
+    border: .5px solid #ffffff;
+    border-radius: 25px;
+}

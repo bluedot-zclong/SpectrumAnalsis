@@ -1,0 +1,13 @@
+## \u76F4\u63A5\u8214\u7816\u9875\u9762\uFF0C\u5728\u6B64\u914D\u7F6E\u8DEF\u5F84
+## \u8BF7\u6C42\u5FC5\u987B\u4E3A === view/XXX.do
+
+# error page
+page404=/error/404
+page500=/error/500
+
+# UserController
+index=/index
+login=/login/login
+regist=/user/regist
+alluser=/user/alluser
+statisticalAnalysis=/statisticalAnalysis

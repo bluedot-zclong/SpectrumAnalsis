@@ -1,0 +1,183 @@
+<#macro algorithmFileContent>
+<#include "/common/deleteModal.ftl" >
+<!--  PAPER WRAP -->
+<div class="wrap-fluid">
+    <div class="container-fluid paper-wrap bevel tlbr">
+        <!-- 内容 -->
+        <!--标题 -->
+        <div class="row">
+            <div id="paper-top">
+                <div class="col-lg-3">
+                    <h2 class="tittle-content-header">
+                        <i class="icon-window"></i>
+                        <span>算法文件</span>
+                    </h2>
+
+                </div>
+
+                <div class="col-lg-7">
+                    <div class="devider-vertical visible-lg"></div>
+                    <div class="tittle-middle-header">
+
+                        <div class="alert">
+                            <button type="button" class="close" data-dismiss="alert">×</button>
+                            <span class="tittle-alert entypo-info-circled"></span>欢迎 ,&nbsp;
+                            <strong>${Session["userSession"].userName}</strong>&nbsp;&nbsp;您上次离开时间, 16:54 PM
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+        <!--/ 标题结束 -->
+
+        <!-- 面包屑导航 -->
+        <ul id="breadcrumb">
+            <li>
+                <span class="entypo-home"></span>
+            </li>
+            <li><i class="fa fa-lg fa-angle-right"></i>
+            </li>
+            <li><a href="#" title="主页">主页</a>
+            </li>
+            <li><i class="fa fa-lg fa-angle-right"></i>
+            </li>
+            <li><a href="#" title="模块标题">算法文件</a>
+            </li>
+            <li class="pull-right">
+                <div class="input-group input-widget">
+                    <input style="border-radius:15px" type="text" placeholder="Search..." class="form-control">
+                </div>
+            </li>
+        </ul>
+        <!-- 面包屑导航结束 -->
+        <div class="content-wrap">
+        	<br>
+        	<button type="button" class="btn btn-info" data-toggle="modal" data-target="#addAlgorithmFile">添加算法文件</button>
+            <!-- 空白页-->
+            <div class="nest" id="Blank_PageClose">
+                <div class="title-alt">
+                    <h6>算法目录</h6>
+                </div>
+                <div class="body-nest" id="Blank_Page_Content">
+					<table id="example" style="width: 100%;" class="display"> 
+					    <thead> 
+						    <tr> 
+						      <th class="no-sorting">
+						      <input type="checkbox"  name="checkbox" id="allCheckBox">全选
+                              </th>
+						      <th>算法名称</th> 
+						      <th>算法类别</th> 
+						      <th>版本号</th> 
+						      <th>上传时间</th> 
+						      <th class="hidden"></th>
+						      <th>操作</th>
+						    </tr> 
+					    </thead> 
+					    <tbody>
+						    <#if algorithmList??>
+								<#list algorithmList as item>
+									<tr>
+									<#if item.isDeleted??&&item.isDeleted==0>
+									  <td class="active text-center">
+										<input type="checkbox"  name="checkbox">
+									  </td>
+									  
+									  <td class="active text-center">${item.algorithmName}</td>
+									  <td class="success text-center">
+									  	<#if item.algorithmSort==0>
+									  		预处理算法
+									  	<#else>
+									  		分析算法
+									  	</#if>
+									  </td>
+									  <td class="success text-center">${item.algorithmVersion}</td>
+									  <td class="warning text-center">${item.gmtCreate?date}</td>
+									  <td class="hidden">${item.algorithmId}</td>
+									  <td class="warning text-center">
+									   		<button type="button" class="btn btn-info update" data-toggle="modal" data-target=".bs-example-modal-sm">详细</button>
+									   		<button type="button" class="btn btn-info delete" data-toggle="modal" data-target=".modeldelete">删除</button>
+									  </td>
+									</#if>
+									</tr>
+								</#list>
+							</#if>
+					    </tbody> 
+					   </table> 
+					  </div> 
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 模态框 -->
+
+<!--delete modal-->
+<@deleteModal name="algorithmId">
+</@deleteModal>
+
+<script>
+	$(".delete").on("click",function(){
+		var id = $(this).parent().prev().text();
+		$("#deleteId").val(id);  		
+	});
+	
+	$("#deleteModel").on("click",function(){
+		var deleteId = $("#deleteId").val();
+		$.ajax({
+	        type: "post",
+	        dataType: "html",
+	        url: '${path}/algorithm/delete/ajax.do',
+	        data: {"algorithmId":deleteId},
+	        success: function (data) {
+	            
+	        }
+	    });
+	});
+	
+	<!--全选js-->
+	$("#allCheckBox").on('click', function() {
+	    if ($(":checkbox").prop("checked")) {
+	        $(":checkbox").prop("checked",true);
+	    }
+	    else {
+	        $(":checkbox").prop("checked",false);
+	    }
+	    });
+	
+	//初始化dataTabale
+	$('#example').DataTable( {
+	    language: {
+	        "sProcessing": "处理中...",
+	        "sLengthMenu": "显示 _MENU_ 项结果",
+	        "sZeroRecords": "没有匹配结果",
+	        "sInfo": "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+	        "sInfoEmpty": "显示第 0 至 0 项结果，共 0 项",
+	        "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
+	        "sInfoPostFix": "",
+	        "sSearch": "搜索:",
+	        "sUrl": "",
+	        "sEmptyTable": "表中数据为空",
+	        "sLoadingRecords": "载入中...",
+	        "sInfoThousands": ",",
+	        "oPaginate": {
+	            "sFirst": "首页",
+	            "sPrevious": "上页",
+	            "sNext": "下页",
+	            "sLast": "末页"
+	        },
+	        "oAria": {
+	            "sSortAscending": ": 以升序排列此列",
+	            "sSortDescending": ": 以降序排列此列"
+	        }  
+	    },
+	    columnDefs:[{ 
+	    	orderable:false,//禁用排序 
+	    	targets:[0,6]   //指定的列 
+	    	}] 
+	});
+</script>
+<!--  END OF PAPER WRAP -->
+</#macro>

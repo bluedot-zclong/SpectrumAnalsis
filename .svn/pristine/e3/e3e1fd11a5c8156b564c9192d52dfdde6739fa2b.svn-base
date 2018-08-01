@@ -1,0 +1,79 @@
+package bluedot.spectrum.service.impl;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import bluedot.spectrum.commons.vo.Point;
+import bluedot.spectrum.commons.vo.SpectrumFile;
+import bluedot.spectrum.service.AlgorithmService;
+import bluedot.spectrum.service.SpectrumService;
+import bluedot.spectrum.util.FileUtil;
+import jxau.spectrum.frame.web.annotation.Autowired;
+/**
+ * 
+ * @author Aaron
+ *
+ */
+public class SpectrumServiceImpl implements SpectrumService {
+
+	@Autowired
+	private AlgorithmService algorithmService;
+	
+	@Override
+	public SpectrumFile resolveSpectrum(String fileUrl) {
+		BufferedReader reader = null;
+		try {
+			reader = FileUtil.getBufferedReader(fileUrl);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} 
+		String tempString = null;
+		SpectrumFile spectrumFile = null;
+        try {
+        	spectrumFile = new SpectrumFile();
+        	List<Point> points = new ArrayList<Point>();
+			while ((tempString = reader.readLine()) != null) {
+			     String[] str = tempString.split(" ");
+			     if(str.length!=2){
+			    	 //异常
+			     }
+			     String x = str[0];
+			     String y = str[1];
+			     Point point = new Point();
+			     point.setX(Double.parseDouble(x.trim()));
+			     point.setY(Double.parseDouble(y.trim()));
+			     points.add(point);
+			}
+			spectrumFile.setPoints(points);
+		}catch (IOException e) {
+			e.printStackTrace();
+		}
+        try {
+			reader.close();
+		}catch (IOException e) {
+			e.printStackTrace();
+		}
+		return spectrumFile;
+	}
+
+	@Override
+	public SpectrumFile pretreatment(SpectrumFile spectrum,String algorithmPath) {
+		return algorithmService.pretreatmentAlgorithm(algorithmPath, spectrum);
+	}
+
+	@Override
+	public SpectrumFile analysisSpectrum(SpectrumFile spectrum) {
+		return null;
+	}
+
+	@Override
+	public Map<String, Object> statisticalAnalysis(Map<String, Object> condition) {
+		return null;
+	}
+
+
+}

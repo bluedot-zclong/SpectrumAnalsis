@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--引入dtd文件，约束这个xml-->
+<!DOCTYPE tables  SYSTEM "dtd/xml_file.dtd">
+<tables>
+    <!-- t_2017用户表的姓名 -->
+    <table>
+        <table-name>user</table-name>
+        <column-name>user_name</column-name>
+        <id>user_id</id>
+    </table>
+
+    <!-- t_2016用户表的姓名 -->
+ <!--    <table>
+        <table-name>t_2016</table-name>
+        <column-name>Xm</column-name>
+       	<id>Xh</id>
+    </table> -->
+
+</tables>

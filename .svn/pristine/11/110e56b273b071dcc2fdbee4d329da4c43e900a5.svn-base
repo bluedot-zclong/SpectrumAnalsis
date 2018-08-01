@@ -1,0 +1,143 @@
+package bluedot.spectrum.web.controller;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import bluedot.spectrum.common.EditObject;
+import bluedot.spectrum.common.QueryObject;
+import bluedot.spectrum.commons.entity.DetectedObject;
+import bluedot.spectrum.commons.entity.DetectionMaterial;
+import bluedot.spectrum.commons.entity.Hardware;
+import bluedot.spectrum.service.EditService;
+import bluedot.spectrum.service.QueryService;
+import bluedot.spectrum.web.core.ModelAndView;
+import jxau.spectrum.frame.web.annotation.Autowired;
+import jxau.spectrum.frame.web.annotation.Controller;
+import jxau.spectrum.frame.web.annotation.RequestMapping;
+import jxau.spectrum.frame.web.annotation.RequestParam;
+
+/**
+ * 硬件模块
+ * @author zclong
+ * 2018年1月20日
+ */
+@Controller
+@RequestMapping("/hardware")
+public class HardwareController extends BaseController{
+	
+	@Autowired
+	private QueryService queryService;
+	@Autowired
+	private EditService editService;
+	
+	/**
+	 * 添加硬件
+	 * 2018年1月21日
+	 * @param request	
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping("/addHardware")
+	public Object addHardware(@RequestParam("isDelete")Integer isDelete,@RequestParam("hardwareType")String hardwareType,@RequestParam("hardwareName")String hardwareName,
+			@RequestParam("spectrumTypeId")Integer spectrumTypeId,HttpServletRequest request, HttpServletResponse response){
+		Map<String,Object> insert = new HashMap<>();
+		insert.put("is_delete", isDelete);
+		insert.put("hardware_type", hardwareType);
+		insert.put("hardware_name", hardwareName);
+		insert.put("spectrum_type_id", spectrumTypeId);
+		EditObject editParm = new EditObject(insert, "hardware"); 
+		int Result = editService.edit(editParm);
+		return "redirect:/hardware/queryAllHardware";
+	}
+	
+	/**
+	 * 删除硬件
+	 * 2018年1月21日
+	 * @param request	
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping("/deleteHardware")
+	public Object deleteHardware(@RequestParam("hardwareId")Long hardwareId,HttpServletRequest request, HttpServletResponse response){
+		Map<String,Object> condition = new HashMap<>();
+        condition.put("hardware_id",hardwareId);
+        EditObject editParm = new EditObject("hardware",condition, null);
+        int Result = editService.edit(editParm);
+        System.out.println("============");
+        System.out.println(hardwareId);
+        return renderSuccess("success");
+	}
+	
+	/**
+	 * 修改硬件,表单请求
+	 * 2018年1月21日
+	 * @param request	
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping("/updateHardware")
+	public Object updateHardware(@RequestParam("hardwareId")Long hardwareId,@RequestParam("hardwareName")String hardwareName,@RequestParam("hardwareType")String hardwareType,HttpServletRequest request, HttpServletResponse response){
+		//往model中添加数据
+        Map<String,Object> condition = new HashMap<>();
+        condition.put("hardware_id",hardwareId);
+        Map<String,Object> updateMap = new HashMap<>();
+        updateMap.put("hardware_name", hardwareName);
+        updateMap.put("hardware_type", hardwareType);
+        EditObject editParm = new EditObject("hardware", updateMap, condition, null);
+        int Result = editService.edit(editParm);
+        System.out.println(hardwareId+","+hardwareName);
+        return "redirect:/hardware/queryAllHardware";
+	}
+	
+	/**
+	 * 查询所有硬件
+	 * 2018年1月21日
+	 * @param request	
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping("/queryAllHardware")
+	public ModelAndView queryAllHardware(HttpServletRequest request, HttpServletResponse response){
+		//传给模板用来存储数据的model
+        Map<String, Object> model = new HashMap<String, Object>();
+        ModelAndView modelAndView = new ModelAndView();
+        //往model中添加数据
+        Map<String,Object> condition = new HashMap<>();
+        QueryObject queryParm = new QueryObject("hardware", condition, 0, 1000, null);
+        List<HashMap<String,Object>> queryResult = queryService.query(queryParm);
+        List<Hardware> AllHardInfoList  = getBeanList(queryResult, Hardware.class);
+        modelAndView.addObject(AllHardInfoList);
+        modelAndView.setViewName("/hardware/hardware");
+        for(Hardware l1 : AllHardInfoList) {
+        	  System.out.println(l1.getHardwareName());
+        	}
+        return modelAndView;
+	}
+	
+	/**
+	 * 查询详细硬件
+	 * 2018年1月21日
+	 * @param request	
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping("/queryHardware")
+	public ModelAndView queryHardware(@RequestParam("hardwareId")Long hardwareId,HttpServletRequest request, HttpServletResponse response){
+		//传给模板用来存储数据的model
+        Map<String, Object> model = new HashMap<String, Object>();
+        ModelAndView modelAndView = new ModelAndView();
+        //往model中添加数据
+        Map<String,Object> condition = new HashMap<>();
+        condition.put("hardware_id", hardwareId);
+        QueryObject queryParm = new QueryObject("hardware", condition, null, null, null);
+        List<HashMap<String,Object>> queryResult = queryService.query(queryParm);
+        List<Hardware> HardInfoList  = getBeanList(queryResult, Hardware.class);
+        modelAndView.addObject(HardInfoList);
+        modelAndView.setViewName("/hardware/hardware");
+        return modelAndView;
+	}
+}

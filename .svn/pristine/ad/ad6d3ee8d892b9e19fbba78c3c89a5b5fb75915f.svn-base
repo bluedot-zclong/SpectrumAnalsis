@@ -1,0 +1,201 @@
+package bluedot.spectrum.web.controller;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import bluedot.spectrum.common.QueryObject;
+import bluedot.spectrum.commons.entity.Maintenance;
+import bluedot.spectrum.commons.entity.User;
+import bluedot.spectrum.service.QueryService;
+import bluedot.spectrum.utils.EncryptUtil;
+import bluedot.spectrum.utils.ValidUtils;
+import bluedot.spectrum.utils.VerifyCodeUtils;
+import bluedot.spectrum.web.core.ModelAndView;
+import jxau.spectrum.frame.web.annotation.Autowired;
+import jxau.spectrum.frame.web.annotation.Controller;
+import jxau.spectrum.frame.web.annotation.RequestMapping;
+import jxau.spectrum.frame.web.annotation.RequestParam;
+import jxau.spectrum.frame.web.annotation.Token;
+
+/**
+ * 用户业务
+ * 
+ * @author 刘勋乘 2018年1月20日
+ */
+@Controller
+@RequestMapping("/user")
+public class UserController extends BaseController {
+	// 注入查询业务
+	@Autowired
+	QueryService queryService;
+
+	/**
+	 * 用户登录
+	 * 
+	 * @param name用户的邮箱号
+	 * @param password用户的密码
+	 * @return 跳转页面的url
+	 */
+	@RequestMapping("/login")
+	public String login(HttpServletRequest req, @RequestParam("email") String email,
+			@RequestParam("password") String password, @RequestParam("vcode") String vcode) {
+
+		// 登录验证
+		if (!ValidUtils.loginVerify(email, password, vcode, req)) {
+			return "redirect:/view/login";
+		}
+
+		// 数据封装
+		Map<String, Object> condition = new HashMap<String, Object>();
+		condition.put("email", email);
+		QueryObject queryObject = new QueryObject("user", condition, null, null, null);
+		// 调用查询业务，得到结果
+		List<HashMap<String, Object>> queryResult = queryService.query(queryObject);
+		if (queryResult.size() == 0) {
+			return "redirect:/view/login";
+		}
+		User loginUser = (User) getBean(queryResult, User.class);
+
+		// 判断密码是否正确
+		if (!EncryptUtil.md5Encode(password, loginUser.getPassword(), loginUser.getSalt())) {
+			return "redirect:/view/login";
+		}
+
+		// 将密码设置为null，确保安全
+		loginUser.setPassword(null);
+		loginUser.setSalt(null);
+
+		// 保存到session中
+		saveSessionUser(loginUser, req.getSession());
+
+		return "redirect:/view/index";
+	}
+
+	/**
+	 * 用户注册
+	 * 
+	 * @param req
+	 * @param resp
+	 * @return需要返回一个跳转的页面将其放入ModeAndView中
+	 */
+	@RequestMapping("/regist")
+	public ModelAndView regist(HttpServletRequest req, HttpServletResponse resp) {
+		 //传给模板用来存储数据的model
+        Map<String, Object> model = new HashMap<String, Object>();
+        
+	    ModelAndView modelAndView = new ModelAndView();
+        
+	    
+	    modelAndView.addAllObjects(model);
+        modelAndView.setViewName("/login/login");		
+		return modelAndView;
+	}
+
+	/**
+	 * 根据用户的id查询用户的信息
+	 * 
+	 * @param userId用户的id
+	 * @return返回的是一个用户的信息放入ModeAndView中
+	 */
+	@RequestMapping("/queryUser/Info")
+	public ModelAndView queryUserInfo(@RequestParam("userId") String userId) {
+		return null;
+	}
+
+	/**
+	 * 找回密码
+	 * 
+	 * @param req
+	 * @param resp
+	 * @return
+	 */
+	@RequestMapping("/findPassword")
+	public ModelAndView findPassword(HttpServletRequest req, HttpServletResponse resp) {
+		return null;
+	}
+
+	/**
+	 * 修改密码
+	 * 
+	 * @param req
+	 * @param resp
+	 * @return
+	 */
+	@RequestMapping("/updatePassword")
+	public ModelAndView updatePassword(HttpServletRequest req, HttpServletResponse resp) {
+		return null;
+	}
+
+	/**
+	 * 修改用户信息
+	 * 
+	 * @param req
+	 * @param resp
+	 * @return
+	 */
+	@RequestMapping("/updateUserInfo")
+	public ModelAndView updateUserInfo(HttpServletRequest req, HttpServletResponse resp) {
+		return null;
+	}
+
+	/**
+	 * 角色申请
+	 * 
+	 * @param req
+	 * @param resp
+	 * @return
+	 */
+	@RequestMapping("/applyRold")
+	public ModelAndView applyRold(HttpServletRequest req, HttpServletResponse resp) {
+		return null;
+	}
+
+	/**
+	 * 查询所有用户信息
+	 * 
+	 * @param req
+	 * @param resp
+	 * @return
+	 */
+	@RequestMapping("/query/alluser")
+	public ModelAndView queryAllUserInfo(HttpServletRequest req, HttpServletResponse resp) {
+		
+		Map<String, Object> model = new HashMap<String, Object>();
+        ModelAndView modelAndView = new ModelAndView();
+        Map<String,Object> condition = new HashMap<>();
+      
+        QueryObject queryParm = new QueryObject("user", condition, null, null, null);
+        List<HashMap<String,Object>> queryResult = queryService.query(queryParm);
+        modelAndView.addAllObjects(model);
+        
+        List<User> userList  = getBeanList(queryResult, User.class);
+        modelAndView.addObject(userList);
+        
+        modelAndView.setViewName("/user/alluser");
+        return modelAndView;
+	}
+
+	private void saveSessionUser(User user, HttpSession session) {
+		// 把验证码去除
+		session.removeAttribute(VerifyCodeUtils.V_CODE);
+		// 存储用户信息
+		session.setAttribute("userSession", user);
+	}
+
+	/**
+	 * 用户退出
+	 * 
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/logout")
+	public String logout(HttpServletRequest request) {
+		request.getSession().invalidate();
+		return "/login/login";
+	}
+}

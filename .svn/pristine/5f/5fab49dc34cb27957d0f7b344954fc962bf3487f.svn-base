@@ -1,0 +1,438 @@
+package bluedot.spectrum.commons.index.operate;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.LineNumberReader;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+
+import bluedot.spectrum.commons.index.connection.MySqlConnection;
+import bluedot.spectrum.commons.index.connection.SqlConnection;
+import bluedot.spectrum.commons.index.database.Database;
+import bluedot.spectrum.commons.index.database.TableAndColumns;
+import bluedot.spectrum.commons.index.exception.CloumnNotDefineException;
+import bluedot.spectrum.commons.index.exception.NullDataException;
+import bluedot.spectrum.commons.index.exception.NullFileNameException;
+import bluedot.spectrum.commons.index.exception.NullQueryStringexception;
+import bluedot.spectrum.commons.index.exception.TableNotDefineException;
+import bluedot.spectrum.commons.index.parser.FileParser;
+import bluedot.spectrum.commons.index.parser.XmlParser;
+
+/**
+ * 
+ * @author Harold
+ * @date 2018年3月15日
+ * @description: 封装了索引的concurrentHashMap,同时提高了查询，添加等操作
+ */
+public class IndexMapOperater {	
+
+	/**
+	 * indexMap用来保存所有的检索字以及他们所在文本的位置 String用来保存字，比如"我"等
+	 * LinkedList<Integer>用来保存该字所在的所有行号
+	 */
+	private static ConcurrentHashMap<String, ArrayList<Integer>> indexMap = new ConcurrentHashMap<String, ArrayList<Integer>>();
+
+	/** 保存到对应的文件名 */
+	private String filename;
+	
+	/**
+	 * 无参构造方法
+	 */
+	private IndexMapOperater() {
+	}
+
+	/**
+	 * 进行indexMap的初始化
+	 * 
+	 * @param XMLFilename
+	 *            传入的文件名，用于初始化
+	 * @param filename
+	 *            用来保存数据存储的文件名
+	 */
+	public IndexMapOperater(String XMLFilename, String filename) {
+		this.filename = filename;
+		initialIndex(XMLFilename);
+	}
+	
+	/**
+	 * 字符串查询
+	 * @param queryString
+	 * @return
+	 */
+	public List<SearchResult> queryIndex(String queryString){
+		
+		// 用来保存结果的List集合
+		List<SearchResult> serachResult = new ArrayList<>(10);
+		List<Integer> lines = null;
+		
+		try {
+			//查询返回对应的行号(最佳的10个结果)
+			lines = indexSearch(queryString);
+		} catch (NullQueryStringexception e) {
+			return null;
+		}
+		//行号排序(从小到大排序)
+		lines.sort(new Comparator<Integer>() {
+			@Override
+			public int compare(Integer int1, Integer int2) {
+				//以下如果改变顺序则调换一下参数位置
+				return int1.compareTo(int2);
+			}
+			
+		});
+		//通过读取文件的方式，拿到对应的记过
+		File sourceFile = new File(filename); 
+		FileReader fileReader = null;
+		
+		try {
+			fileReader = new FileReader(sourceFile);
+		} catch (FileNotFoundException e) {			
+			e.printStackTrace();
+		}  
+		
+		//航都读取的防暑
+		LineNumberReader reader = new LineNumberReader(fileReader);  
+		int thisLine = 1;
+		String text = null;
+		boolean flag;
+		for(int line : lines){
+			flag = true;
+			while(flag){			
+				try {
+					text = reader.readLine();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+	            if (thisLine == line) {  
+	            	//对行内容进行封装
+	            	SearchResult sr = packageResult(text);
+	            	serachResult.add(sr);
+	                flag = false;
+	                
+	            }  
+				thisLine++;
+			 }
+	         
+		}
+		
+		try {
+			reader.close();
+			fileReader.close();
+		} catch (IOException e) {			
+			e.printStackTrace();
+		}
+		return serachResult;
+	}
+
+	/**
+	 * 将结果进行封装
+	 * @param result 传入结果字符串
+	 * @return 返回封装后的结果
+	 */
+	private SearchResult packageResult(String result){
+		SearchResult sr = new SearchResult();
+		String[] splitResult = result.split(" ");
+
+		sr.setResultString(splitResult[0]);
+		sr.setId(Integer.parseInt(splitResult[1]));
+		sr.setTableName(splitResult[2]);
+		sr.setCloumnName(splitResult[3]);
+		return sr;
+		
+	}
+	
+	
+	/**
+	 * 对输入字符串进行索引查询
+	 * 
+	 * @param queryString 查询字符串
+	 * @return 返回
+	 * @throws NullQueryStringexception  查询字符串为空异常
+	 */
+	private List<Integer> indexSearch(String queryString) throws NullQueryStringexception {
+		//100%匹配度的行号
+		ArrayList<Integer> prattenLines ;
+		//不完全匹配度的行号
+		LinkedList<Integer> lines = new LinkedList<Integer>();
+		
+		if(queryString.length() <= 0){
+			throw new NullQueryStringexception();
+		}
+		
+		// 对查询字符号才能进行分割
+		List<String> splitString = stringResolve(queryString);
+		
+		try{
+			prattenLines = indexMap.get(String.valueOf(splitString.get(0)));
+			lines.addAll(prattenLines);
+		}catch (Exception e) {
+			prattenLines = null;
+		}
+		
+		
+		if(splitString.size() == 1){
+			return prattenLines;
+		}
+		
+		
+		//遍历所有的字符，并进行匹配
+		for(int i = 1; i < splitString.size(); i++){
+			if(indexMap.get(String.valueOf(splitString.get(i))) != null){
+				prattenLines = matchAllLines(prattenLines, indexMap.get(String.valueOf(splitString.get(i))));
+				lines.addAll(prattenLines);
+			}			
+		}
+		
+		
+		try{
+			//如果结果数量满足10，则返回需要的结果
+			if(prattenLines.size() >= 10){
+				prattenLines.subList(10, prattenLines.size()).clear();
+				return prattenLines;
+			}
+		}catch (Exception e) {
+			return null;
+		}
+		
+		
+		int temp;
+		//如果不满足，则通过lines来达到10条;
+		for(int i = prattenLines.size(); i < 10;){
+			if(lines.size() == 0){
+				break;
+			}
+		
+			temp = lines.getLast();
+			if(!prattenLines.contains(temp)){
+				prattenLines.add(temp);
+				i++;
+			}
+			lines.removeLast();
+
+		}
+		
+		return prattenLines;
+	}
+	
+	/**
+	 * 匹配两个字符都拥有的行号
+	 * @param one 第一个查询字符的所有行号
+	 * @param two 第二个查询字符的所有行号
+	 * @return 返回都含有的匹配字符
+	 */
+	private ArrayList<Integer> matchAllLines(ArrayList<Integer> one, ArrayList<Integer> two){
+		//matchResult用来保存匹配结果
+		ArrayList<Integer> matchResult = new ArrayList<>();
+		//分别用来代表他们的长度
+		int i = 0, j = 0;
+		
+		while(i < one.size() && j < two.size()){
+			if(one.get(i) > two.get(j)){
+				j++;
+			}
+			else if(one.get(i) < two.get(j)){
+				i++;
+			}
+			else{
+				matchResult.add(one.get(i));				
+				i++;
+				j++;
+			}
+		}
+		return matchResult;
+	}
+
+	private List<String> matchLine(LinkedList<String> one, LinkedList<String> two, int i, int j){
+		
+		return two;		
+	}
+
+	/**
+	 * 对传入的字符串进行分词，并得到想要的分词效果
+	 * 
+	 * @param suspendString
+	 *            待处理字符串
+	 * @return 返回处理后的分词结果
+	 */
+	private List<String> stringResolve(String suspendString) {
+		// 用来保存处理后的分词结果，并返回
+		List queryCharacter = new ArrayList<String>();
+
+		// 将待处理的字符串先转换成小写，再变成字符数组，便于分组管理
+		char[] dataChar = suspendString.toLowerCase().toCharArray();
+
+		// 用来保存多个字符构成字符串
+		StringBuilder dataString = new StringBuilder("");
+
+		// 遍历切割后的字符
+		for (char c : dataChar) {
+			// charValue保存字符的值，用来判断是中文还是英文
+			int charValue = (int) c;
+
+			// 如果是空格，分割字符，如果是英文，就append到dataKey的末尾
+			if (charValue == 32) {
+				// 如果dataKey有字符，加入到分词结果链表中,并清除dataKey
+				if (dataString.length() > 0) {
+					queryCharacter.add(dataString);
+					dataString = dataString.delete(0, dataString.length());
+				}
+
+				continue;
+			}
+			// 对于英文字母的处理
+			else if ((charValue > 64 && charValue < 91) || (charValue > 96 && charValue < 122)) {
+				dataString.append(c);
+			}
+			// 对于非ASCII码表中的字符处理
+			else if (charValue > 128) {
+				if (dataString.length() > 0) {
+					queryCharacter.add(dataString);
+					dataString = dataString.delete(0, dataString.length());
+				}
+				queryCharacter.add(c);
+
+			}
+			// 对于ASCII码表中其他字符的处理
+			else {
+				if (dataString.length() > 0) {
+					queryCharacter.add(dataString);
+					dataString = dataString.delete(0, dataString.length());
+				}
+			}
+
+		}
+		if (dataString.length() > 0) {
+			queryCharacter.add(dataString);
+			dataString = dataString.delete(0, dataString.length());
+		}
+		return queryCharacter;
+	}
+
+	/**
+	 * 对引入XML文件进行读取和对索引进行初步建立
+	 * 
+	 * @param XMLFilename
+	 *            初始化索引
+	 */
+	private void initialIndex(String XMLFilename) {
+		// 创建封装TableAndColumns的集合，用于封装表名和表中的列名
+		List tableAndColumns = new ArrayList<TableAndColumns>();
+
+		// 创建XML解析对象
+		FileParser parser = new XmlParser();
+
+		// 存储需要建立索引的所有数据
+		List<String> datas = null;
+
+		// 1、首先对XML文件进行解析
+		tableAndColumns = parser.getTableAndColumDateFromFile(XMLFilename);
+
+		// 2、将文件加载到一个文件中，同时得到需要建立索引的数据保存在datas中
+		try {
+			datas = dateToList(tableAndColumns);
+		} catch (TableNotDefineException e) {
+			e.printStackTrace();
+		} catch (CloumnNotDefineException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (NullFileNameException e) {
+			e.printStackTrace();
+		}
+
+		// 3.对数据建立索引
+		try {
+			datasToIndexMap(datas);
+		} catch (NullDataException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * 数据库
+	 * 
+	 * @param tableAndColumns
+	 * @return
+	 * @throws SQLException
+	 * @throws CloumnNotDefineException
+	 * @throws TableNotDefineException
+	 * @throws NullFileNameException
+	 */
+	private List<String> dateToList(List<TableAndColumns> tableAndColumns)
+			throws TableNotDefineException, CloumnNotDefineException, SQLException, NullFileNameException {
+		// 用于遍历时，封装当前表的数据
+		List<String> datas = new ArrayList<>();
+
+		// 建立数据库连接
+		SqlConnection mySqlConnection = new MySqlConnection();
+		Connection conn = mySqlConnection.getConnection("com.mysql.jdbc.Driver",
+				"jdbc:mysql://120.79.132.108/spectrumanalysis?useSSL = false&useUnicode=true&characterEncoding=utf8",
+				"root", "root");
+
+		// 遍历表和数据项，取出所有需要建立索引的数据。
+		for (TableAndColumns table : tableAndColumns) {
+			Database database = new Database(conn, table, filename);
+			datas.addAll(database.addToList());
+		}
+
+		return datas;
+	}
+
+	private void datasToIndexMap(List<String> datas) throws NullDataException {
+		// 判断是否有建立索引的数据
+		if (datas.size() == 0) {
+			throw new NullDataException("数据为空");
+		}
+
+		// 用来标记当前数据属于第几行
+		int i = 1;
+
+		// 得到字符串分解后的链表结果
+		// List<String> dataToKeys = null;
+
+		// 遍历所有数据，从而建立索引
+		for (String data : datas) {
+			List<String> dataToKeys = stringResolve(data);
+			for (Object dataKey : dataToKeys) {
+				addToIndexMap(dataKey.toString(), i);
+			}
+
+			i++;
+		}
+
+	}
+
+	/**
+	 * 用来添加索引到缓存map中
+	 * 
+	 * @param indexKey
+	 * @param line
+	 */
+	private static void addToIndexMap(String indexKey, int line) {
+		ArrayList<Integer> list = indexMap.get(indexKey);
+		
+		// 如果indexMap中不存在该indexKey的key,直接添加
+		if (list == null) {
+			ArrayList<Integer> lineList = new ArrayList<Integer>();
+			lineList.add(line);
+			indexMap.put(indexKey, lineList);
+			return;
+		}
+
+		// 如果indexMap中存在该indexKey的key,先判断该key对应的value尾端进行比较，大于添加到链表尾端，否则不进行操作
+		int lastLine =  list.get(list.size() - 1);
+		if (lastLine < line) {
+			list.add(line);
+		}
+
+	}
+
+
+}

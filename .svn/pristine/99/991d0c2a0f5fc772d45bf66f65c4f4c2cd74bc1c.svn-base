@@ -1,0 +1,165 @@
+<#macro content>
+<!--  PAPER WRAP -->
+<div class="wrap-fluid">
+    <div class="container-fluid paper-wrap bevel tlbr">
+        <!-- 内容 -->
+        <!--标题 -->
+        <div class="row">
+            <div id="paper-top">
+                <div class="col-lg-3">
+                    <h2 class="tittle-content-header">
+                        <i class="icon-window"></i>
+                        <span>光谱信息
+                            </span>
+                    </h2>
+
+                </div>
+
+                <div class="col-lg-7">
+                    <div class="devider-vertical visible-lg"></div>
+                    <div class="tittle-middle-header">
+
+                        <div class="alert">
+                            <button type="button" class="close" data-dismiss="alert">×</button>
+                            <span class="tittle-alert entypo-info-circled"></span>
+                            欢迎 ,&nbsp;
+                            <strong>${Session["userSession"].userName}</strong>&nbsp;&nbsp;您上次离开时间, 16:54 PM
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+        <!--/ 标题结束 -->
+
+       <!-- 面包屑导航结束 -->
+        <div class="content-wrap">
+        	<br>
+            <!-- 空白页-->
+            <div class="nest" id="Blank_PageClose">
+                <div class="title-alt">
+                    <h6>
+                        光谱名称</h6>
+                </div>
+
+                <div class="body-nest" id="Blank_Page_Content">
+                	<p><strong>光谱名称：</strong>${spectrum.spectrumName}</p>
+               		<p><strong>光谱描述：</strong>${spectrum.spectrumDescription}</p>
+                </div>
+            </div>
+        </div>
+        
+         <!-- 面包屑导航结束 -->
+        <div class="content-wrap">
+        	<br>
+            <!-- 空白页-->
+            <div class="nest" id="Blank_PageClose">
+                <div class="title-alt">
+                    <h6>
+                       光谱详细信息</h6>
+                </div>
+
+                <div class="body-nest" id="Blank_Page_Content">
+                	 <section class="invoice-env">
+				                    <!-- Invoice header -->
+				                    <div class="invoice-header">
+				                        <!-- Invoice Options Buttons -->
+				                        <div class="invoice-options hidden-print">
+				                            <a href="javascript:;" onclick="window.print();" class="btn btn-block btn-secondary btn-icon btn-icon-standalone btn-icon-standalone-right btn-single text-left">
+				                                <i class="fa-print"></i>
+				                                <span>打印</span>
+				                            </a>
+				                        </div>
+				                        <!-- Invoice Data Header -->
+				                        <div class="invoice-logo">
+				                            <ul class="list-unstyled">
+				                                <li class="upper">
+				                                    <strong>光谱类型：</strong>${spectrum.spectrumTypeName}
+				                                </li>
+				                                <li>
+				                                    <strong>光谱文件类型：</strong>${spectrum.spectrumTypeName}
+				                                </li>
+				                                <li>
+				                                    <strong>硬件类型：</strong>${spectrum.hardwareName}
+				                                </li>
+				                                <li>
+				                                    <strong>是否标准库：</strong>
+				                                    ${(spectrum.isStandardSpectrum==0)?string('否','是')}
+				                                                                        </li>
+				                                <li>
+				                                    <strong>采用标准：</strong>${spectrum.spectrumDescription}
+				                                </li>
+				                                <li>
+				                                    <strong>保存时间：</strong>${spectrum.spectrumDescription}
+				                                </li>
+				                            </ul>
+				                        </div>
+				                    </div>
+				                    <!-- Client and Payment Details -->
+				                    <div class="invoice-details">
+				                        <div class="invoice-client-info">
+				                            <strong>被检测物</strong>
+				                            <ul class="list-unstyled">
+				                                <li>学名：</li>
+				                                <li>产地：</li>
+				                            </ul>
+				                            <ul class="list-unstyled">
+				                                <li>${spectrum.spectrumDescription}</li>
+				                                <li>${spectrum.spectrumDescription}</li>
+				                            </ul>
+				                        </div>
+				                        <div class="invoice-payment-info">
+				                            <strong>检测内容</strong>
+				                            <ul class="list-unstyled">
+				                                    <li>${spectrum.spectrumDescription}</li>
+				                                    <li>${spectrum.spectrumDescription}</li>
+				                            </ul>
+				                        </div>
+				                    </div>
+				                    <hr>
+				                    <div class="invoice-details">
+				                        <div class="invoice-client-info">
+				                            <strong>特征峰值：</strong>
+				                            <ul class="list-unstyled">
+				                                <li>${spectrum.spectrumDescription}</li>
+				                                <li>${spectrum.spectrumDescription}</li>
+				                                <li>${spectrum.spectrumDescription}</li>
+				                                <li>${spectrum.spectrumDescription}</li>
+				                            </ul>
+				                        </div>
+				                    </div>
+				                    <hr>
+				                </section>
+				                
+				                
+				<section class="gallery-env">
+					<div class="row">
+						<div class="col-md-12">
+							<div class="album-header">
+								<h2>光谱图像</h2>
+
+								<ul class="album-options list-unstyled list-inline">
+									<li>
+										<a href="#">
+											<i class="fa-download"></i> 下载谱图
+										</a>
+									</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-12">
+							<img src="../assets/img/谱图.png"/>
+						</div>
+					</div>
+				</section>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</div>
+<!--  END OF PAPER WRAP -->
+</#macro>

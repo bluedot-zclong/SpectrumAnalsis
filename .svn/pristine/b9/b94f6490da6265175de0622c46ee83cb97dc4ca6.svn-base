@@ -1,0 +1,100 @@
+package bluedot.spectrum.web.controller;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import bluedot.spectrum.web.core.ModelAndView;
+import jxau.spectrum.frame.web.annotation.Controller;
+import jxau.spectrum.frame.web.annotation.RequestMapping;
+
+/**
+ * 检验线业务
+ * @author 巫发萍
+ * 2018年1月20日
+ */
+@Controller
+@RequestMapping("/connectionalgorithm")
+public class ConnectionAlgorithmController extends BaseController{
+	
+	/**
+	 * 查询检验线---ajax请求
+	 * WFP
+	 * @param req
+	 * @param resp
+	 * @return
+	 * 2018年1月21日
+	 */
+	@RequestMapping("/query/ajax")
+	public Object queryConnectionAlgorithmAjax (HttpServletRequest req, HttpServletResponse resp){
+
+        return renderSuccess();
+	}
+	
+	/**
+	 * 查询检验线---普通请求
+	 * WFP
+	 * @param req
+	 * @param resp
+	 * @return
+	 * 2018年1月21日
+	 */
+	@RequestMapping("/query")
+	public ModelAndView queryConnectionAlgorithm (HttpServletRequest req, HttpServletResponse resp){
+		//传给模板用来存储数据的model
+        Map<String, Object> model = new HashMap<String, Object>();
+        ModelAndView modelAndView = new ModelAndView();
+        
+        //往model中添加数据
+        
+        modelAndView.addAllObjects(model);
+        modelAndView.setViewName("/");
+        return modelAndView;
+	}
+	
+	/**
+	 * 更新检验线(更新、添加)---ajax请求
+	 * WFP
+	 * @param req
+	 * @param resp
+	 * @return
+	 * 2018年1月21日
+	 */
+	@RequestMapping("/update/ajax")
+	public Object updateConnectionAlgorithmAjax (HttpServletRequest req, HttpServletResponse resp){
+
+        return renderSuccess();
+	}
+	
+	/**
+	 * 删除检验线---ajax请求
+	 * WFP
+	 * @param req
+	 * @param resp
+	 * @return
+	 * 2018年1月21日
+	 */
+	@RequestMapping("/delete/ajax")
+	public Object deleteConnectionAlgorithmAjax (HttpServletRequest req, HttpServletResponse resp){
+
+        return renderSuccess();
+	}
+	
+	/**
+	 * 公开检验线---ajax请求
+	 * WFP
+	 * @param req
+	 * @param resp
+	 * @return
+	 * 2018年1月21日
+	 */
+	@RequestMapping("/public/ajax")
+	public Object publicConnectionAlgorithmAjax (HttpServletRequest req, HttpServletResponse resp){
+
+        return renderSuccess();
+	}
+	
+	
+}

@@ -1,0 +1,26 @@
+<#compress>
+	<#assign path="${basePath}">
+	<#include "/common/bootstrapstatic.ftl" >
+	<#include "/common/basepagestatic.ftl" >
+	<#include "/common/datatablestatic.ftl" >
+	<#include "/common/basepage.ftl" >
+	<#include "/common/navbar.ftl" >
+	<#include "/common/sidebar.ftl" >
+	<#include "algorithmFileContent.ftl" >
+	<@htmlHead title="算法文件 ">
+	</@htmlHead>
+	<@bootstrapstatic>
+	</@bootstrapstatic>
+	<@basepagestatic>
+	</@basepagestatic>
+	<@datatablestatic>
+	</@datatablestatic>
+	<@htmlBody>
+		<@sidebar>
+		</@sidebar>
+		<@navbar>
+		</@navbar>
+		<@algorithmFileContent>
+		</@algorithmFileContent>
+	</@htmlBody>
+</#compress>

@@ -1,0 +1,176 @@
+package bluedot.spectrum.commons.entity;
+
+import java.util.Date;
+
+/**
+ * Apply -> apply
+ * 2018-01-21
+ */
+public class Apply {
+    /**
+     * 申请编号
+     */
+    private Long applyId;
+
+    /**
+     * 对应的申请对象的id
+     */
+    private Integer applyObjectId;
+
+    /**
+     * 申请类型,0代表角色申请,1代表解冻申请,2代表光谱申请,3代表检验线申请，4代表操作人员的光谱申请
+     */
+    private Integer applyType;
+
+    /**
+     * 申请人
+     */
+    private Long userId;
+
+    /**
+     * 申请文件
+     */
+    private String applyFileUrl;
+
+    /**
+     * 申请时间
+     */
+    private Date applyTime;
+
+    /**
+     * 审核状态,0代表拒绝，1代表通过，2代表待审核，3代表操作人员申请光谱的待审核状态
+     */
+    private Integer applyStatus;
+
+    /**
+     * 审核时间
+     */
+    private Date checkTime;
+
+    /**
+     * 申请账号解封理由
+     */
+    private String applyContent;
+
+    /**
+     * 审核批注
+     */
+    private String applyReason;
+
+    /**
+     * 创建时间
+     */
+    private Date gmtCreate;
+
+    /**
+     * 最后修改时间
+     */
+    private Date gmtModified;
+
+    private static final long serialVersionUID = 1L;
+
+    public Long getApplyId() {
+        return applyId;
+    }
+
+    public void setApplyId(Long applyId) {
+        this.applyId = applyId;
+    }
+
+    public Integer getApplyObjectId() {
+        return applyObjectId;
+    }
+
+    public void setApplyObjectId(Integer applyObjectId) {
+        this.applyObjectId = applyObjectId;
+    }
+
+    public Integer getApplyType() {
+        return applyType;
+    }
+
+    public void setApplyType(Integer applyType) {
+        this.applyType = applyType;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public String getApplyFileUrl() {
+        return applyFileUrl;
+    }
+
+    public void setApplyFileUrl(String applyFileUrl) {
+        this.applyFileUrl = applyFileUrl;
+    }
+
+    public Date getApplyTime() {
+        return applyTime;
+    }
+
+    public void setApplyTime(Date applyTime) {
+        this.applyTime = applyTime;
+    }
+
+    public Integer getApplyStatus() {
+        return applyStatus;
+    }
+
+    public void setApplyStatus(Integer applyStatus) {
+        this.applyStatus = applyStatus;
+    }
+
+    public Date getCheckTime() {
+        return checkTime;
+    }
+
+    public void setCheckTime(Date checkTime) {
+        this.checkTime = checkTime;
+    }
+
+    public String getApplyContent() {
+        return applyContent;
+    }
+
+    public void setApplyContent(String applyContent) {
+        this.applyContent = applyContent;
+    }
+
+    public String getApplyReason() {
+        return applyReason;
+    }
+
+    public void setApplyReason(String applyReason) {
+        this.applyReason = applyReason;
+    }
+
+    public Date getGmtCreate() {
+        return gmtCreate;
+    }
+
+    public void setGmtCreate(Date gmtCreate) {
+        this.gmtCreate = gmtCreate;
+    }
+
+    public Date getGmtModified() {
+        return gmtModified;
+    }
+
+    public void setGmtModified(Date gmtModified) {
+        this.gmtModified = gmtModified;
+    }
+
+	@Override
+	public String toString() {
+		return "Apply [applyId=" + applyId + ", applyObjectId=" + applyObjectId + ", applyType=" + applyType
+				+ ", userId=" + userId + ", applyFileUrl=" + applyFileUrl + ", applyTime=" + applyTime
+				+ ", applyStatus=" + applyStatus + ", checkTime=" + checkTime + ", applyContent=" + applyContent
+				+ ", applyReason=" + applyReason + "]";
+	}
+    
+}

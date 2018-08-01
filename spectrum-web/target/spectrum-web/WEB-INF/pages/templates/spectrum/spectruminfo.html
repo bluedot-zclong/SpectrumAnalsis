@@ -1,0 +1,27 @@
+<#compress>
+	<#assign path="${basePath}">
+	<#include "/common/bootstrapstatic.ftl" >
+	<#include "/common/basepagestatic.ftl" >
+	<#include "/common/basepage.ftl" >
+	<#include "/common/navbar.ftl" >
+	<#include "/common/sidebar.ftl" >
+	<#include "/common/echartsstatic.ftl" >
+	<#include "spectruminfocontent.ftl" >
+	<@htmlHead title="光谱 ">
+	</@htmlHead>
+	<@bootstrapstatic>
+	</@bootstrapstatic>
+	<@basepagestatic>
+	</@basepagestatic>
+	<@echartsstatic>
+	</@echartsstatic>
+	<@htmlBody>
+		<@sidebar>
+		</@sidebar>
+		<@navbar>
+		</@navbar>
+		<@content>
+		
+		</@content>
+	</@htmlBody>
+</#compress>

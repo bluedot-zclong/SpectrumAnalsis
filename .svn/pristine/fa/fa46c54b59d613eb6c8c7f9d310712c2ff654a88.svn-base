@@ -1,0 +1,243 @@
+<#macro content>
+<!--  PAPER WRAP -->
+<div class="wrap-fluid">
+    <div class="container-fluid paper-wrap bevel tlbr">
+        <!-- 内容 -->
+        <!--标题 -->
+        <div class="row">
+            <div id="paper-top">
+                <div class="col-lg-3">
+                    <h2 class="tittle-content-header">
+                        <i class="icon-window"></i>
+                        <span>文件夹
+                            </span>
+                    </h2>
+
+                </div>
+
+                <div class="col-lg-7">
+                    <div class="devider-vertical visible-lg"></div>
+                    <div class="tittle-middle-header">
+
+                        <div class="alert">
+                            <button type="button" class="close" data-dismiss="alert">×</button>
+                            <span class="tittle-alert entypo-info-circled"></span>
+                            欢迎 ,&nbsp;
+                            <strong>${Session["userSession"].userName}</strong>&nbsp;&nbsp;您上次离开时间, 16:54 PM
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+        <!--/ 标题结束 -->
+
+        <!-- 面包屑导航 -->
+        <ul id="breadcrumb">
+            <li>
+                <span class="entypo-home"></span>
+            </li>
+            <li><i class="fa fa-lg fa-angle-right"></i>
+            </li>
+            <li><a href="#" title="主页">主页</a>
+            </li>
+            <li><i class="fa fa-lg fa-angle-right"></i>
+            </li>
+            <li><a href="#" title="模块标题">文件夹</a>
+            </li>
+            <li class="pull-right">
+                <div class="input-group input-widget">
+                    <input style="border-radius:15px" type="text" placeholder="Search..." class="form-control">
+                </div>
+            </li>
+        </ul>
+        <!-- 面包屑导航结束 -->
+        <div class="content-wrap">
+        	<br>
+        	<button type="button" class="btn btn-info" data-toggle="modal" data-target="#uploadmodal">上传光谱</button>
+            <!-- 空白页-->
+            <div class="nest" id="Blank_PageClose">
+                <div class="title-alt">
+                    <h6>
+                        文件夹目录</h6>
+                    <div class="titleClose">
+                        <a class="gone" href="#Blank_PageClose">
+                            <span class="entypo-cancel"></span>
+                        </a>
+                    </div>
+                    <div class="titleToggle">
+                        <a class="nav-toggle-alt" href="#Blank_Page_Content">
+                            <span class="entypo-up-open"></span>
+                        </a>
+                    </div>
+
+                </div>
+
+                <div class="body-nest" id="Blank_Page_Content">
+					<table class="table table-striped">
+					<thead>
+					  <!-- On rows -->
+					    <tr>
+					   		<th class="text-center"><strong>光谱编号</strong></th>
+							<th class="text-center"><strong>光谱文件名</strong></th>
+							<th class="text-center"><strong>光谱类型名称</strong></th>
+							<th class="text-center"><strong>创建日期</strong></th>
+							<th class="text-center"><strong>操作</strong></th>
+						</tr>
+					</thead>
+						<tbody>
+						<#if spectruminfoList??>
+						<#list spectruminfoList as item>
+							<tr>
+							<#if item.isDelete??&&item.isDelete==0>
+							<td class="active text-center">${item.spectruminfoId}</td>
+							  <td class="active text-center">
+							  ${item.spectrumName}
+							  </td>
+							  <td class="success text-center">
+							  	${item.spectrumTypeName}
+							  </td>
+							  
+							  <td class="warning text-center">${item.gmtCreate?date}</td>
+							   <td class="warning text-center">
+							   		<a type="button" href="${path}/spectrum/showSpectrumInfo.do?id=${item.spectruminfoId}" class="btn btn-info update" >详细</a>
+							   		<button type="button" class="btn btn-info delete" data-toggle="modal" data-target=".modeldelete">删除</button>
+							   </td>
+							   </#if>
+							</tr>
+						</#list>
+						</#if>
+						</tbody>
+					</table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- delete modal -->
+
+<div class="modal fade modeldelete" tabindex="-1" role="dialog" aria-labelledby="modeldelete">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="modal-content">
+     <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Message</h4>
+      </div>
+      <div class="modal-body">
+     		<h2 class="text-center">delete？</h2>
+     		<input type="text" class="form-control hidden" id="deleteDirId"  name="dirId" placeholder="">
+      </div>
+      <div class="modal-body">
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal" id="deleteModel">YES</button>
+        <button type="button" class="btn btn-info">NO</button>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+<!-- upload spectrum -->
+<div class="modal fade" id="uploadmodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						<h4 class="modal-title" id="myModalLabel">上传本地光谱</h4>
+					</div>
+					<div class="modal-body">
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								<h3 class="panel-title">请填写上传信息</h3>
+							</div>
+							<div class="panel-body">
+								<form action="plugin/uploadPlugin" role="form" class="form-horizontal" method="post" enctype="multipart/form-data">
+									<div class="form-group">
+										<label class="col-sm-3 control-label" for="pluginName">光谱名称 <font color="red">*</font></label>
+										<div class="col-sm-6">
+											<input type="text" class="form-control" name="plugin.pluginName" id="pluginName" placeholder="请填写您的光谱名称" maxlength="16" required>
+										</div>
+									</div>
+									<div class="form-group-separator"></div>
+									<div class="form-group">
+										<label class="col-sm-3 control-label" for="pluginName">被检测物<font color="red">*</font></label>
+										<div class="col-sm-6">
+											<input type="text" class="form-control" name="plugin.version" id="version" placeholder="请填写被检测物" maxlength="16" required>
+										</div>
+									</div>
+									<div class="form-group-separator"></div>
+									<div class="form-group">
+										<label class="col-sm-3 control-label" for="pluginName">被检测物内容<font color="red">*</font></label>
+										<div class="col-sm-6">
+											<input type="text" class="form-control" name="plugin.version" id="version" placeholder="如氨基酸" maxlength="16" required>
+										</div>
+									</div>
+									<div class="form-group-separator"></div>
+									<div class="form-group">
+										<label class="col-sm-3 control-label">光谱类型 <font color="red">*</font></label>
+										<div class="col-sm-6">
+											<select class="form-control" name="plugin.pluginType" id="pluginType" required>
+												<option>拉曼光谱</option>
+												<option>红外光谱</option>
+											</select>
+										</div>
+									</div>
+									<div class="form-group-separator"></div>
+									<div class="form-group">
+										<label class="col-sm-3 control-label">存放位置<font color="red">*</font></label>
+										<div class="col-sm-6">
+											<select class="form-control" name="plugin.pluginType" id="pluginType" required>
+												<option>文件夹1</option>
+												<option>文件夹2</option>
+											</select>
+										</div>
+									</div>
+									<div class="form-group-separator"></div>
+									<div class="form-group">
+										<label class="col-sm-3 control-label" for="description">光谱描述 <font color="red">*</font></label>
+										<div class="col-sm-6">
+											<textarea class="form-control autogrow" cols="5" name="plugin.description" id="description" placeholder="请填写您的光谱描述" maxlength="200" required></textarea>
+										</div>
+									</div>
+									<div class="form-group-separator"></div>
+									<div class="form-group">
+										<label class="col-sm-3 control-label">光谱文件 <font color="red">*</font></label>
+										<div class="col-sm-8">
+											<input type="file" name="binFile" value="" class="col-sm-8" required/>
+										</div>
+									</div>
+									<div class="form-group-separator"></div>
+									<div class="form-group col-sm-6 pull-right" >
+										<button type="submit" class="btn btn-success">上传</button>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+<script type="text/javascript">
+	$(".delete").on("click",function(){
+		var id = $(this).parent().prev().prev().prev().prev().text();
+		$("#deleteDirId").val(id); 
+	});
+	
+	$("#deleteModel").on("click",function(){
+		
+		var deleteId = $("#deleteDirId").val();
+		 $.post("${path}/spectrum/delete/ajax.do",
+			  {
+			    spectrumId:deleteId,
+			  },
+			  function(data,status){
+			  		window.location.href="query.do?dirtype=0&start=0&end=10";
+			  });
+	});
+</script>
+<!--  END OF PAPER WRAP -->
+</#macro>

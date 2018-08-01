@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>jxau.bluedot</groupId>
+  <artifactId>SpectrumAnalsis2</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  <modules>
+    <module>spectrum-commons</module>
+    <module>spectrum-service</module>
+    <module>spectrum-dao</module>
+    <module>spectrum-utils</module>
+    <module>spectrum-web</module>
+    <module>spectrum-test</module>
+    <module>spectrum-frame</module>
+  </modules>
+  
+  <properties>
+  	<commons-fileupload.version>1.3.1</commons-fileupload.version>
+  	<servlet.version>3.1.0</servlet.version>
+  	<commons-lang3.version>3.5</commons-lang3.version>
+  	<shiro-core.version>1.2.3</shiro-core.version>
+  </properties>
+  <dependencies>
+  	<!-- 上传下载jar包 -->
+	<dependency>
+	    <groupId>commons-fileupload</groupId>
+	    <artifactId>commons-fileupload</artifactId>
+	    <version>${commons-fileupload.version}</version>
+	</dependency>
+	<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>${servlet.version}</version>
+			<scope>provided</scope>
+		</dependency>
+	<dependency>
+		<groupId>org.apache.commons</groupId>
+		<artifactId>commons-lang3</artifactId>
+		<version>${commons-lang3.version}</version>
+	</dependency>
+  </dependencies>
+</project>

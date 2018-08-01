@@ -1,0 +1,50 @@
+package bluedot.spectrum.service;
+
+import java.util.Map;
+
+import bluedot.spectrum.commons.vo.SpectrumFile;
+
+/**
+ * 光谱模块
+ * @author zclong
+ * 2018年1月20日
+ */
+public interface SpectrumService {
+
+	/**
+	 * 解析光谱
+	 * 2018年1月20日
+	 * zclong
+	 * @param fileUrl 光谱路径
+	 * @return T 光谱对象
+	 */
+	SpectrumFile resolveSpectrum(String fileUrl);
+	 
+	 /**
+	  * 光谱预处理
+	  * 2018年1月20日
+	  * zclong
+	  * @param clazz 光谱对象
+	  * @return T 光谱对象
+	  */
+	SpectrumFile pretreatment(SpectrumFile spectrum,String algorithmPath);
+	 
+	 /**
+	  * 光谱分析
+	  * 2018年1月20日
+	  * zclong
+	  * @param clazz
+	  * @return
+	  */
+	SpectrumFile analysisSpectrum(SpectrumFile spectrum);
+	 
+	 /**
+	  * 统计分析
+	  * 2018年1月20日
+	  * zclong
+	  * @param condition ： 条件
+	  * @return 
+	  */
+	 Map<String, Object> statisticalAnalysis(Map<String, Object> condition);
+
+}

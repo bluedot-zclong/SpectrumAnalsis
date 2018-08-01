@@ -1,0 +1,200 @@
+
+<#macro content>
+<#include "/common/deleteModal.ftl" >
+<!--  PAPER WRAP -->
+<div class="wrap-fluid">
+    <div class="container-fluid paper-wrap bevel tlbr">
+        <!-- 内容 -->
+        <!--标题 -->
+        <div class="row">
+            <div id="paper-top">
+                <div class="col-lg-3">
+                    <h2 class="tittle-content-header">
+                        <i class="icon-window"></i>
+                        <span>文件夹
+                            </span>
+                    </h2>
+
+                </div>
+
+                <div class="col-lg-7">
+                    <div class="devider-vertical visible-lg"></div>
+                    <div class="tittle-middle-header">
+
+                        <div class="alert">
+                            <button type="button" class="close" data-dismiss="alert">×</button>
+                            <span class="tittle-alert entypo-info-circled"></span>
+                            欢迎 ,&nbsp;
+                            <strong>${Session["userSession"].userName}</strong>&nbsp;&nbsp;您上次离开时间, 16:54 PM
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+        <!--/ 标题结束 -->
+
+        <!-- 面包屑导航 -->
+        <ul id="breadcrumb">
+            <li>
+                <span class="entypo-home"></span>
+            </li>
+            <li><i class="fa fa-lg fa-angle-right"></i>
+            </li>
+            <li><a href="#" title="主页">主页</a>
+            </li>
+            <li><i class="fa fa-lg fa-angle-right"></i>
+            </li>
+            <li><a href="#" title="模块标题">文件夹</a>
+            </li>
+            <li class="pull-right">
+                <div class="input-group input-widget">
+                    <input style="border-radius:15px" type="text" placeholder="Search..." class="form-control">
+                </div>
+            </li>
+        </ul>
+        <!-- 面包屑导航结束 -->
+        <div class="content-wrap">
+        	<br>
+        	<button type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal11">新建文件夹</button>
+            <!-- 空白页-->
+            <div class="nest" id="Blank_PageClose">
+                <div class="title-alt">
+                    <h6>  文件夹目录</h6>
+                </div>
+
+                <div class="body-nest" id="Blank_Page_Content">
+					<table class="table table-striped">
+					<thead>
+					  <!-- On rows -->
+					    <tr>
+					   		 <th class="text-center"><strong>文件夹编号</strong></th>
+							<th class="text-center"><strong>文件夹名</strong></th>
+							<th class="text-center"><strong>类型</strong></th>
+							<th class="text-center"><strong>创建日期</strong></th>
+							<th class="text-center"><strong>操作</strong></th>
+						</tr>
+					</thead>
+						<tbody>
+						<#if dirList??>
+						<#list dirList as item>
+							<tr>
+							
+							<td class="active text-center">${item.dirId}</td>
+							  <td class="active text-center">
+								  <a href="${path}/dir/showAllFile.do?dirId=${item.dirId}&dirType=${item.dirTypeId}">
+								  ${item.dirName}
+								  </a>
+							  </td>
+							  <td class="success text-center">
+							  	${(item.dirTypeId==1)?string('算法','光谱')}
+							  </td>
+							  
+							  <td class="warning text-center">${item.gmtCreate?date}</td>
+							   <td class="warning text-center">
+							   		<button type="button" class="btn btn-info update" data-toggle="modal" data-target=".bs-example-modal-sm">修改</button>
+							   		<button type="button" class="btn btn-info delete" data-toggle="modal" data-target=".modeldelete">删除</button>
+							   </td>
+							</tr>
+						</#list>
+						</#if>
+						</tbody>
+					</table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- update modal -->
+
+<div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="modal-content">
+     <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">修改</h4>
+      </div>
+      <div class="modal-body">
+     <form class="form-inline" action="update.do" method="post">
+		  <div class="form-group">
+		    <label for="exampleInputName2">Name: </label>
+		    <input type="text" class="form-control" id="dirName" name="dirName" placeholder="">
+		  </div>
+		  <div class="form-group hidden">
+		    <input type="text" class="form-control hidden" id="dirId"  name="dirId" placeholder="">
+		    <input type="text" class="form-control hidden"  name="dirType" value="${fileType}"/>
+		  </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-info">Save changes</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!--delete modal-->
+<@deleteModal name="dirId">
+</@deleteModal>
+
+<!-- create modal -->
+<div class="modal" id="myModal11" tabindex="-1" role="dialog" aria-labelledby="modelcreate"  aria-hidden="true">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="modal-content">
+     <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">新建</h4>
+      </div>
+      <div class="modal-body">
+     <form class="form-inline" action="create.do" method="post">
+		  <div class="form-group">
+		    <label for="exampleInputName2">Name: </label>
+		    <input type="text" class="form-control" id="dirName" name="dirName" placeholder="">
+		  </div>
+		  <div class="form-group hidden">
+		    <input type="text" class="form-control hidden"  name="dirType" value="${fileType}"/>
+		  </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+        <button type="submit" class="btn btn-info">新建文件夹</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+	var fileType = ${fileType};
+	$(".update").on("click",function(){
+		var id = $(this).parent().prev().prev().prev().prev().text();
+  		$("#dirId").val(id);
+	});
+	
+	$(".delete").on("click",function(){
+		var id = $(this).parent().prev().prev().prev().prev().text();
+		$("#deleteId").val(id);  		
+	});
+	
+	$("#deleteModel").on("click",function(){
+		var deleteId = $("#deleteId").val();
+		$.post("delete/ajax.do",
+			  {
+			    dirId:deleteId,
+			  },
+			  function(data,status){
+			  		if(fileType == 0){
+			  			window.location.href="query.do?dirtype=0&start=0&end=10";
+			  		}else{
+			  			window.location.href="query.do?dirtype=1&start=0&end=10";
+			  		}
+			  });
+	});
+	
+	
+</script>
+<!--  END OF PAPER WRAP -->
+</#macro>

@@ -1,0 +1,84 @@
+<#compress>
+	<#include "/common/bootstrapstatic.ftl" >
+	<#include "/common/basepage.ftl" >
+	<@htmlHead title="上传测试页面 ">
+	</@htmlHead>
+	<@bootstrapstatic>
+	</@bootstrapstatic>
+	<@htmlBody>
+<!-- 		<form  enctype="multipart/form-data" action="uploadMySelf.do" method="post">
+		    <input type="text" name="name"><br>   -->
+<!--   			<input type="text" name="test" id="test"><br> -->
+  
+			<input type="file" name="file1" id="file1"><br>  
+			  
+			
+			  
+			<button onClick="wfpUpload()"> 提交 </button>
+		  
+<!-- 		</form> -->
+		<script type="text/javascript">
+			
+			var pieceFile = 5*1024 * 1024; //文件切割后，每片文件的大小
+		
+			
+			function wfpUpload(){
+				var file = document.getElementById("file1").files[0];
+				var filesize = file.size;
+				var filename = file.name;
+				
+				var totalPieceNum = Math.ceil(filesize/pieceFile);	//文件可以切多少片
+				
+				var start = 0;
+				var end = 0;
+				var index = 0;
+				while(start < filesize){
+					
+					end = pieceFile + start;
+					if(end > filesize) {
+						end = filesize;
+	                }
+
+					var piece = file.slice(start,end);	//切割文件
+					var formData = new FormData();
+					
+/* 					formData.append("test",$("#test").val()); */
+					formData.append("file",piece,filename);	//三个参数:文件名，文件内容，文件原来名字
+					
+					console.log(formData);
+					$.ajax({
+						url:'uploadMySelf.do',
+					    type:'POST', //GET
+					    async:true,    //或false,是否异步
+					    data:formData,
+					    timeout:5000,    //超时时间
+					    /* dataType:'json',   */  //返回的数据格式：json/xml/html/script/jsonp/text
+					    
+					    cache:false,
+			            traditional: true,
+			            contentType: false,
+			            processData: false,
+					    
+					    beforeSend:function(){
+
+					        console.log('发送前')
+					    },
+					    success:function(data,textStatus,jqXHR){
+
+					    },
+					    error:function(xhr,textStatus){
+					        console.log('错误')
+
+					    },
+					    complete:function(){
+					        console.log('结束')
+					    }
+					})
+					start = end;
+					index++;
+				}
+											
+			}
+		</script>
+	</@htmlBody>
+</#compress>

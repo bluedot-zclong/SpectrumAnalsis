@@ -1,0 +1,99 @@
+package bluedot.spectrum.web.controller;
+
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import bluedot.spectrum.commons.entity.User;
+import bluedot.spectrum.commons.index.operate.IndexMapOperater;
+import bluedot.spectrum.commons.index.operate.SearchResult;
+import bluedot.spectrum.web.core.ModelAndView;
+import jxau.spectrum.frame.dataAccess.Excuter.SqlConnectionFactory;
+import jxau.spectrum.frame.web.annotation.Autowired;
+import jxau.spectrum.frame.web.annotation.Controller;
+import jxau.spectrum.frame.web.annotation.RequestMapping;
+import jxau.spectrum.frame.web.annotation.RequestParam;
+
+/**
+ * 全局搜索模块
+ * @author zclong
+ * 2018年1月21日
+ */
+
+@Controller
+@RequestMapping("/search")
+public class GlobalSearchController extends BaseController{
+		
+	static String classPath = GlobalSearchController.class.getResource("").getFile().toString();
+	
+	static String path = classPath.substring(1, classPath.lastIndexOf("/bluedot"));
+		
+	static IndexMapOperater indexMapOperater = new IndexMapOperater(path + "/table_and_column.xml", path + "/data.txt");
+	
+	
+	
+	static int count = 0;
+	
+	/**
+	 * 全局搜索查询之简单索引
+	 * 2018年1月21日
+	 * zclong
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping("/indexsearch")
+	public Object getAllMaintenances(@RequestParam("searchString") String searchString){
+		
+		System.out.println(searchString);
+		List<SearchResult> result = null;
+		
+		//如果查询结果为空。则返回Null
+		try{
+			result = indexMapOperater.queryIndex(searchString);
+		}catch (Exception e) {
+			return null;
+		}
+		
+		//查询结果为null
+		if(result == null){
+			return null;
+		}
+		
+		for(SearchResult re : result){
+			System.out.println(re.toString());
+		}
+		return renderSuccess(result);				
+	}
+	
+	/**
+	 * 全局搜索之搜索
+	 * 2018年1月21日
+	 * zclong
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping("/globalsearch")
+	public ModelAndView search(@RequestParam("searchString") String searchString){
+		System.out.println(searchString);
+		List<SearchResult> result = null;
+		try{
+			result = indexMapOperater.queryIndex(searchString);
+		}catch (Exception e) {
+			// TODO: handle exception
+			return null;
+		}
+		for(SearchResult re : result){
+			System.out.println(re.toString());
+		}
+		
+		
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.addObject(result);
+        modelAndView.setViewName("/");		
+		return modelAndView;
+	}
+	
+}

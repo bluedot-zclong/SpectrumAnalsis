@@ -1,0 +1,42 @@
+package bluedot.spectrum.service;
+
+import bluedot.spectrum.commons.vo.SpectrumFile;
+
+/**
+ * 算法模块
+ * @author zclong
+ * 2018年1月20日
+ */
+public interface AlgorithmService {
+	
+	/**
+	 * 调用预处理算法
+	 * WFP
+	 * @param algorithmFilePath 算法文件路径
+	 * @param spectrumFile	光谱文件路径
+	 * @return
+	 * 2018年2月1日
+	 */
+	SpectrumFile pretreatmentAlgorithm(String algorithmFilePath,SpectrumFile spectrumFile);
+	
+	
+	/**
+	 * 调用分析算法
+	 * WFP
+	 * @param algorithmFilePath 算法文件路径
+	 * @param spectrumFile	光谱文件路径
+	 * @return
+	 * 2018年2月1日
+	 */
+	SpectrumFile analysisAlgorithm(String algorithmFilePath,SpectrumFile spectrumFile);
+	
+	/**
+	 * 检查算法是否符合规范，如果
+	 * WFP
+	 * @param url 文件夹路径
+	 * @param msg 
+	 * @return
+	 * 2018年2月1日
+	 */
+	boolean checkAlgorithm(String filePath,String msg);
+}

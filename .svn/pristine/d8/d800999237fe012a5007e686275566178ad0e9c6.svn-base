@@ -1,0 +1,198 @@
+package bluedot.spectrum.web.controller;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import bluedot.spectrum.common.EditObject;
+import bluedot.spectrum.common.QueryObject;
+import bluedot.spectrum.commons.entity.Dir;
+import bluedot.spectrum.commons.entity.Spectruminfo;
+import bluedot.spectrum.service.EditService;
+import bluedot.spectrum.service.QueryService;
+import bluedot.spectrum.service.SpectrumService;
+import bluedot.spectrum.web.core.ModelAndView;
+import jxau.spectrum.frame.web.annotation.Autowired;
+import jxau.spectrum.frame.web.annotation.Controller;
+import jxau.spectrum.frame.web.annotation.RequestMapping;
+import jxau.spectrum.frame.web.annotation.RequestParam;
+
+/**
+ * 光谱业务
+ * @author wfp
+ *
+ */
+@Controller
+@RequestMapping("/spectrum")
+public class SpectrumController extends BaseController {
+	
+	@Autowired
+	private QueryService queryService;
+	
+	@Autowired
+	private EditService editService;
+	
+	@Autowired
+	private SpectrumService spectrumService;
+	
+	/**
+	 * 查询光谱---ajax请求
+	 * WFP
+	 * @param req
+	 * @param resp
+	 * @return
+	 * 2018年1月21日
+	 */
+	@RequestMapping("/query/ajax")
+	public Object querySpectrumAjax (HttpServletRequest req, HttpServletResponse resp){
+
+        return renderSuccess();
+	}
+	
+	/**
+	 * 查询光谱---普通请求
+	 * WFP
+	 * @param req
+	 * @param resp
+	 * @return
+	 * 2018年1月21日
+	 */
+	@RequestMapping("/showSpectrumInfo")
+	public ModelAndView querySpectrum (@RequestParam("id")Integer id, HttpServletRequest req, HttpServletResponse resp){
+        ModelAndView modelAndView = new ModelAndView();
+        Map<String,Object> condition = new HashMap<>();
+        condition.put("spectruminfo_id", id);
+        QueryObject queryParm = new QueryObject("spectruminfo", condition, 0, 1, null);
+        List<HashMap<String,Object>> queryResult = queryService.query(queryParm);
+        List<Spectruminfo> spectrumInfo  = getBeanList(queryResult, Spectruminfo.class);
+        modelAndView.addObject("spectrum",spectrumInfo.get(0));
+        modelAndView.setViewName("/spectrum/spectruminfo");
+        return modelAndView;
+	}
+	
+	/**
+	 * 更新光谱(更新)---ajax请求
+	 * WFP
+	 * @param req
+	 * @param resp
+	 * @return
+	 * 2018年1月21日
+	 */
+	@RequestMapping("/update/ajax")
+	public Object updateSpectrumAjax (HttpServletRequest req, HttpServletResponse resp){
+
+        return renderSuccess();
+	}
+	
+	/**
+	 * 删除光谱---ajax请求
+	 * WFP
+	 * @param req
+	 * @param resp
+	 * @return
+	 * 2018年1月21日
+	 */
+	@RequestMapping("/delete/ajax")
+	public Object deleteSpectrumAjax (@RequestParam("spectrumId") Integer id,HttpServletRequest req, HttpServletResponse resp){
+		 Map<String,Object> condition = new HashMap<>();
+	     condition.put("spectruminfo_id",id);
+	     Map<String,Object> updateMap = new HashMap<>();
+	     updateMap.put("is_delete", 1);
+	     EditObject editParm = new EditObject("spectruminfo", updateMap, condition, null);
+	     int Result = editService.edit(editParm);
+         return renderSuccess();
+	}
+	
+	/**
+	 * 分析光谱---ajax请求
+	 * WFP
+	 * @param req
+	 * @param resp
+	 * @return
+	 * 2018年1月21日
+	 */
+	@RequestMapping("/analysis/ajax")
+	public Object analysisSpectrumAjax (HttpServletRequest req, HttpServletResponse resp){
+		//spectrumService.pretreatment(spectrum, algorithmPath);
+        return renderSuccess();
+	}
+	
+	/**
+	 * 取得光谱点数据---ajax请求
+	 * WFP
+	 * @param req
+	 * @param resp
+	 * @return
+	 * 2018年1月21日
+	 */
+	@RequestMapping("/getPoint/ajax")
+	public Object getPointSpectrumAjax (HttpServletRequest req, HttpServletResponse resp){
+
+        return renderSuccess();
+	}
+	
+	/**
+	 * 导出光谱图片---ajax请求
+	 * WFP
+	 * @param req
+	 * @param resp
+	 * @return
+	 * 2018年1月21日
+	 */
+	@RequestMapping("/exportimage/ajax")
+	public Object exportImageSpectrumAjax (HttpServletRequest req, HttpServletResponse resp){
+
+        return renderSuccess();
+	}
+	
+	
+	/**
+	 * 查询光谱类型---ajax请求
+	 * WFP
+	 * @param req
+	 * @param resp
+	 * @return
+	 * 2018年1月21日
+	 */
+	@RequestMapping("/querytype/ajax")
+	public Object queryTypeSpectrumAjax (HttpServletRequest req, HttpServletResponse resp){
+
+        return renderSuccess();
+	}
+	/**
+	 * 查询光谱类型---普通请求
+	 * WFP
+	 * @param req
+	 * @param resp
+	 * @return
+	 * 2018年1月21日
+	 */
+	@RequestMapping("/querytype")
+	public Object queryTypeSpectrum (HttpServletRequest req, HttpServletResponse resp){
+		//传给模板用来存储数据的model
+        Map<String, Object> model = new HashMap<String, Object>();
+        ModelAndView modelAndView = new ModelAndView();
+        
+        //往model中添加数据
+        
+        modelAndView.addAllObjects(model);
+        modelAndView.setViewName("/");
+        return modelAndView;
+	}
+	
+	/**
+	 * 更新光谱类型---ajax请求
+	 * WFP
+	 * @param req
+	 * @param resp
+	 * @return
+	 * 2018年1月21日
+	 */
+	@RequestMapping("/updatetype/ajax")
+	public Object updateTypeSpectrumAjax (HttpServletRequest req, HttpServletResponse resp){
+        return renderSuccess();
+	}
+}

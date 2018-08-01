@@ -1,0 +1,120 @@
+package bluedot.spectrum.web.controller;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import bluedot.spectrum.service.QueryService;
+import bluedot.spectrum.web.core.ModelAndView;
+import jxau.spectrum.frame.web.annotation.Autowired;
+import jxau.spectrum.frame.web.annotation.Controller;
+import jxau.spectrum.frame.web.annotation.RequestMapping;
+import jxau.spectrum.frame.web.annotation.RequestParam;
+
+/**
+ * 算法业务
+ * @author 巫发萍
+ * 2018年1月20日
+ */
+@Controller
+@RequestMapping("/algorithm")
+public class AlgorithmController extends BaseController {
+
+	/**
+	 * 查询算法---ajax请求
+	 * WFP
+	 * @param req
+	 * @param resp
+	 * @return
+	 * 2018年1月21日
+	 */
+	@RequestMapping("/query/ajax")
+	public Object queryAlgorithmAjax(HttpServletRequest req, HttpServletResponse resp){
+
+
+        return renderSuccess();
+	}
+	
+	/**
+	 * 查询算法---普通请求
+	 * WFP
+	 * @param req
+	 * @param resp
+	 * @return
+	 * 2018年1月21日
+	 */
+	@RequestMapping("/query")
+	public ModelAndView queryAlgorithm(HttpServletRequest req, HttpServletResponse resp){
+		//传给模板用来存储数据的model
+        Map<String, Object> model = new HashMap<String, Object>();
+        ModelAndView modelAndView = new ModelAndView();
+        
+        //往model中添加数据
+        
+        modelAndView.addAllObjects(model);
+        modelAndView.setViewName("/algorithm/algorithmFile");
+        return modelAndView;
+	}
+	
+	/**
+	 * 更新算法---ajax请求
+	 * WFP
+	 * @param req
+	 * @param resp
+	 * @return
+	 * 2018年1月21日
+	 */
+	@RequestMapping("/update/ajax")
+	public Object updateAlgorithm(HttpServletRequest req, HttpServletResponse resp){
+
+        return renderSuccess();
+	}
+	
+	/**
+	 * 删除算法---ajax请求
+	 * WFP
+	 * @param req
+	 * @param resp
+	 * @return
+	 * 2018年1月21日
+	 */
+	@RequestMapping("/delete/ajax")
+	public Object deleteAlgorithm(HttpServletRequest req, HttpServletResponse resp,
+			@RequestParam("algorithmId")Integer algorithmId){
+		System.out.println(algorithmId+"&&&&&&&&&");
+        return renderSuccess();
+	}
+	
+	/**
+	 * 上传算法---ajax请求
+	 * WFP
+	 * @param req
+	 * @param resp
+	 * @return
+	 * 2018年1月21日
+	 */
+	@RequestMapping("/upload/ajax")
+	public Object uploadAlgorithm(HttpServletRequest req, HttpServletResponse resp){
+
+        return renderSuccess();
+	}
+	
+	/**
+	 * 下载算法---ajax请求
+	 * WFP
+	 * @param req
+	 * @param resp
+	 * @return
+	 * 2018年1月21日
+	 */
+	@RequestMapping("/download/ajax")
+	public Object downloadAlgorithm(HttpServletRequest req, HttpServletResponse resp){
+
+        return renderSuccess();
+	}
+	
+}

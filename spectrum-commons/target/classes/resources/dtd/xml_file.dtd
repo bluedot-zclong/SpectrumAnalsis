@@ -1,0 +1,7 @@
+<!ENTITY AUTHOR "Harold">
+
+<!ELEMENT tables (table+)>
+<!ELEMENT table (table-name, column-name+, id)>
+<!ELEMENT table-name (#PCDATA)>
+<!ELEMENT column-name (#PCDATA)>
+<!ELEMENT id (#PCDATA)>
