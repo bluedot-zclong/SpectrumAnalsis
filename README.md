@@ -59,8 +59,7 @@ https://gitee.com/zclong/spectrum3.git
 
 1.用SVN/Git客户端检出项目
 ```
-Git: https://gitee.com/zclong/SpectrumAnalsis2.git
-SSH: git@gitee.com:zclong/SpectrumAnalsis2.git
+Git: https://github.com/bluedot-zclong/SpectrumAnalsis.git
 ```
 
 2.导入eclipse/IDEA/myeclipse,选中项目右键选择Maven->Update Project...
